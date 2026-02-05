@@ -23,6 +23,13 @@ class Sprite {
         actualizarRect();
     }
 
+    void mover() {
+        posX += movX;
+        posY += movY;
+        actualizarRect();
+    }
+
+    //-----------------------------------------------------------------------------
     private:
         void actualizarRect() {
             int rectX = static_cast<int>(posX-sprite->w/2 * scale);

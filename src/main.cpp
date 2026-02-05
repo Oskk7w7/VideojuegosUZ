@@ -3,8 +3,12 @@
 #include "Sprite.cpp"
 #include <iostream>
 
+
+static SDL_Window* win;
+static SDL_Surface* winSurface;
+
 //Inicializa SDL, crea la ventana y la superficie
-void inicializarSDL(SDL_Window*& win, SDL_Surface*& surface) {
+void inicializarSDL() {
 	//Inicializar SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
@@ -20,8 +24,8 @@ void inicializarSDL(SDL_Window*& win, SDL_Surface*& surface) {
 	}
 
 	//Crear superficie
-	surface = SDL_GetWindowSurface(win);
-	if (surface == nullptr) {
+	winSurface = SDL_GetWindowSurface(win);
+	if (winSurface == nullptr) {
 		std::cerr << "SDL_GetWindowSurface Error: " << SDL_GetError() << std::endl;
 		SDL_Quit();
 		exit(1);
@@ -29,18 +33,27 @@ void inicializarSDL(SDL_Window*& win, SDL_Surface*& surface) {
 }
 
 //Cierra la ventana y termina SDL
-void cerrarSDL(SDL_Window *win, SDL_Surface *surface) {
-	SDL_FreeSurface(surface);	//Liberar superficie
-	surface = NULL;
+void cerrarSDL() {
+	SDL_FreeSurface(winSurface);	//Liberar superficie
+	winSurface = NULL;
 	SDL_DestroyWindow(win);		//Cerrar ventana
 	SDL_Quit();					//Cerrar SDL
 }
 
+void gameLoop(Sprite& sprite) {
+	for (int i = 0; i <= 1000; i++) {
+		sprite.mover();
+
+		//Repintar sprite y actualizar superficie de la ventana
+		SDL_FillRect(winSurface, NULL, SDL_MapRGB(winSurface->format, 0, 0, 0));
+		SDL_BlitScaled(sprite.sprite, NULL, winSurface, &sprite.spriteRect);
+		SDL_UpdateWindowSurface(win);
+	}
+}
+
 int main(int argc, char* argv[]) {
 	//Inicializar
-	SDL_Window* win;
-	SDL_Surface* winSurface;
-	inicializarSDL(win, winSurface);
+	inicializarSDL();
 
 
 	//Dimensiones de la ventana
@@ -49,15 +62,13 @@ int main(int argc, char* argv[]) {
 	SDL_GetWindowSize(win, &w_width, &w_height);
 
 	//Poner sprite en el centro de la ventana
-	Sprite sprite = Sprite(w_width/2, w_height/2, 0, 0, 0.5, IMG_Load("assets/patata.jpg"));
+	Sprite sprite = Sprite(w_width/2, w_height/2, 1, 1, 0.5, IMG_Load("assets/patata.jpg"));
+	
+	//Mover sprite
+	gameLoop(sprite);
 
-	SDL_FillRect(winSurface, NULL, SDL_MapRGB(winSurface->format, 0, 0, 0));
-	SDL_BlitScaled(sprite.sprite, NULL, winSurface, &sprite.spriteRect);
+	//SDL_Delay(3000); //Esperar 3 segundos para cerrar la ventana
 
-	SDL_UpdateWindowSurface(win);
-
-	SDL_Delay(3000); //Esperar 3 segundos para cerrar la ventana
-
-	cerrarSDL(win, winSurface);
+	cerrarSDL();
 	return 0;
 }
