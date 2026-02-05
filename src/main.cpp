@@ -1,8 +1,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "Sprite.cpp"
+#include "random.cpp"
 #include <iostream>
-#include <random>
 
 
 static SDL_Window* win;
@@ -51,6 +51,19 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
 				cerrarSDL();
 			}
+			//Cambiar posición y movimiento con Enter
+			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+				float newPosX = getRandomfloat(sprite.spriteRect.w/2, w_width-sprite.spriteRect.w/2);
+				float newPosY = getRandomfloat(sprite.spriteRect.h/2, w_height-sprite.spriteRect.h/2);
+				float newMovX = getRandomfloat(-1, 1);
+				float newMovY = getRandomfloat(-1, 1);
+				float newSpeed = getRandomfloat(0.03, 0.3);
+				sprite.setPosX(newPosX);
+				sprite.setPosY(newPosY);
+				sprite.setMovX(newMovX);
+				sprite.setMovY(newMovY);
+				sprite.speed = newSpeed;
+			}
 		}
 
 		//Actualizar movimiento de sprites
@@ -74,7 +87,8 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 int main(int argc, char* argv[]) {
 	//Inicializar
 	inicializarSDL();
-
+	//Inicializar <random>
+	
 
 	//Dimensiones de la ventana
 	int w_width = 0;

@@ -42,6 +42,21 @@ class Sprite {
         actualizarRect();
     }
 
+    //--------------------
+    float getPosX() {
+        return posX;
+    }
+    float getPosY() {
+        return posY;
+    }
+    void setPosX(float pos) {
+        posX = pos;
+        actualizarRect();
+    }
+    void setPosY(float pos) {
+        posY = pos;
+        actualizarRect();
+    }
     float getMovX() {
         return movX;
     }
@@ -49,14 +64,12 @@ class Sprite {
         return movY;
     }
     void setMovX(float mov) {
-        movX = mov;
-        actualizarRect();
+        setMovimiento(mov, movY, speed);
     }
     void setMovY(float mov) {
-        movY = mov;
-        actualizarRect();
+        setMovimiento(movX, mov, speed);
     }
-
+    //--------------------
 
     //-----------------------------------------------------------------------------
     private:
