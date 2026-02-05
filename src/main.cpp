@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "Sprite.cpp"
 #include <iostream>
+#include <random>
 
 
 static SDL_Window* win;
@@ -40,9 +41,17 @@ void cerrarSDL() {
 	SDL_Quit();					//Cerrar SDL
 }
 
-void gameLoop(Sprite& sprite) {
-	for (int i = 0; i <= 1000; i++) {
+void gameLoop(Sprite& sprite, int w_width, int w_height) {
+	for (int i = 0; i <= 10000; i++) {
 		sprite.mover();
+		
+		//Rebotar con bordes
+		if (sprite.spriteRect.x <= 0 || sprite.spriteRect.x+sprite.spriteRect.w >= w_width) {
+            sprite.setMovX(sprite.getMovX()*-1);
+        }
+        else if (sprite.spriteRect.y <= 0 || sprite.spriteRect.y+sprite.spriteRect.h >= w_height) {
+            sprite.setMovY(sprite.getMovY()*-1);
+        }
 
 		//Repintar sprite y actualizar superficie de la ventana
 		SDL_FillRect(winSurface, NULL, SDL_MapRGB(winSurface->format, 0, 0, 0));
@@ -66,7 +75,7 @@ int main(int argc, char* argv[]) {
 	sprite.setMovimiento(1.0f, 1.0f, 0.1);
 	
 	//Mover sprite
-	gameLoop(sprite);
+	gameLoop(sprite, w_width, w_height);
 
 	//SDL_Delay(3000); //Esperar 3 segundos para cerrar la ventana
 

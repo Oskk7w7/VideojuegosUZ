@@ -4,13 +4,14 @@
 #include <iostream>
 
 class Sprite {
-    public:
+    private:
         float posX;
         float posY;
+        float scale;
         float movX;
         float movY;
+    public:
         float speed;
-        float scale;
         SDL_Rect spriteRect;
         SDL_Surface* sprite;
 
@@ -41,7 +42,21 @@ class Sprite {
         actualizarRect();
     }
 
-    
+    float getMovX() {
+        return movX;
+    }
+    float getMovY() {
+        return movY;
+    }
+    void setMovX(float mov) {
+        movX = mov;
+        actualizarRect();
+    }
+    void setMovY(float mov) {
+        movY = mov;
+        actualizarRect();
+    }
+
 
     //-----------------------------------------------------------------------------
     private:
