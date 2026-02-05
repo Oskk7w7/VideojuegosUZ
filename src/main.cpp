@@ -20,7 +20,7 @@ void inicializarSDL() {
 	}
 
 	//Crear ventana
-	win = SDL_CreateWindow("Demo 1", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
+	win = SDL_CreateWindow("Demo 1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_RESIZABLE);
 	if (win == nullptr) {
 		std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
 		SDL_Quit();
@@ -70,6 +70,26 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 			//Cerrar ventana o pulsar escape -> terminar
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
 				cerrarSDL();
+			}
+			//Redimensionado de la ventana
+			else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
+				// winSurface = SDL_GetWindowSurface(win);
+				// int new_w_width;
+				// int new_w_height;
+				// SDL_GetWindowSize(win, &new_w_width, &new_w_height);
+				// float widthProportion = (float)new_w_width / (float)w_width;
+				// float heightProportion = (float)new_w_height / (float)w_height;
+				// w_width = new_w_width;
+				// w_height = new_w_height;
+				// sprite.setPos(sprite.getPosX() * widthProportion, sprite.getPosY() * heightProportion);
+
+				
+
+				float xProportion = sprite.getPosX() / (float) w_width;
+				float yProportion = sprite.getPosY() / (float) w_height;
+				winSurface = SDL_GetWindowSurface(win);
+				SDL_GetWindowSize(win, &w_width, &w_height);
+				sprite.setPos(w_width * xProportion, w_height * yProportion);
 			}
 			//Cambiar posición y movimiento con Enter
 			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {

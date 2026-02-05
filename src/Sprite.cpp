@@ -58,6 +58,11 @@ class Sprite {
         posY = pos;
         actualizarRect();
     }
+    void setPos(float x, float y) {
+        posX = x;
+        posY = y;
+        actualizarRect();
+    }
     float getMovX() {
         return movX;
     }
