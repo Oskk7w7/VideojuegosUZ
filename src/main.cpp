@@ -1,9 +1,10 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "Sprite.cpp"
 #include <iostream>
 
 //Inicializa SDL, crea la ventana y la superficie
-void inicializarSDL(SDL_Window *win, SDL_Surface *surface) {
+void inicializarSDL(SDL_Window*& win, SDL_Surface*& surface) {
 	//Inicializar SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
@@ -38,16 +39,25 @@ void cerrarSDL(SDL_Window *win, SDL_Surface *surface) {
 int main(int argc, char* argv[]) {
 	//Inicializar
 	SDL_Window* win;
-	SDL_Surface* surface;
-	inicializarSDL(win, surface);
+	SDL_Surface* winSurface;
+	inicializarSDL(win, winSurface);
 
 
+	//Dimensiones de la ventana
+	int w_width = 0;
+	int w_height = 0;
+	SDL_GetWindowSize(win, &w_width, &w_height);
+
+	//Poner sprite en el centro de la ventana
+	Sprite sprite = Sprite(w_width/2, w_height/2, 0, 0, 0.5, IMG_Load("assets/patata.jpg"));
+
+	SDL_FillRect(winSurface, NULL, SDL_MapRGB(winSurface->format, 0, 0, 0));
+	SDL_BlitScaled(sprite.sprite, NULL, winSurface, &sprite.spriteRect);
 
 	SDL_UpdateWindowSurface(win);
 
-
 	SDL_Delay(3000); //Esperar 3 segundos para cerrar la ventana
 
-	cerrarSDL(win, surface);
+	cerrarSDL(win, winSurface);
 	return 0;
 }
