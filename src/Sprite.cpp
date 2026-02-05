@@ -1,33 +1,47 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <cmath>
 #include <iostream>
 
 class Sprite {
     public:
-        int posX;
-        int posY;
-        int movX;
-        int movY;
+        float posX;
+        float posY;
+        float movX;
+        float movY;
+        float speed;
         float scale;
         SDL_Rect spriteRect;
         SDL_Surface* sprite;
 
-        Sprite(int _posX, int _posY, int _movX, int _movY, float _scale, SDL_Surface* _sprite) {
+        Sprite(int _posX, int _posY, float _scale, SDL_Surface* _sprite) {
         posX = _posX;
         posY = _posY;
-        movX = _movX;
-        movY = _movY;
+        movX = 0;
+        movY = 0;
+        speed = 0.0f;
         scale = _scale;
         sprite = _sprite;
 
         actualizarRect();
     }
 
+    void setMovimiento(float _movX, float _movY, float _speed) {
+        //Normalizar el vector de movimiento
+        float modulo = std::sqrt(_movX * _movX + _movY * _movY);
+
+        movX = _movX / modulo;
+        movY = _movY / modulo;
+        speed = _speed;
+    }
+
     void mover() {
-        posX += movX;
-        posY += movY;
+        posX += movX * speed;
+        posY += movY * speed;
         actualizarRect();
     }
+
+    
 
     //-----------------------------------------------------------------------------
     private:

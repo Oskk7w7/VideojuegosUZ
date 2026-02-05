@@ -62,7 +62,8 @@ int main(int argc, char* argv[]) {
 	SDL_GetWindowSize(win, &w_width, &w_height);
 
 	//Poner sprite en el centro de la ventana
-	Sprite sprite = Sprite(w_width/2, w_height/2, 1, 1, 0.5, IMG_Load("assets/patata.jpg"));
+	Sprite sprite = Sprite(w_width/2, w_height/2, 0.5, IMG_Load("assets/patata.jpg"));
+	sprite.setMovimiento(1.0f, 1.0f, 0.1);
 	
 	//Mover sprite
 	gameLoop(sprite);
