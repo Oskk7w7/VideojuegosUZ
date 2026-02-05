@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include <cmath>
 #include <iostream>
+#include "tiempo.cpp"
 
 class Sprite {
     private:
@@ -37,8 +38,8 @@ class Sprite {
     }
 
     void mover() {
-        posX += movX * speed;
-        posY += movY * speed;
+        posX += movX * speed * tiempo::DELTA_TIME;
+        posY += movY * speed * tiempo::DELTA_TIME;
         actualizarRect();
     }
 

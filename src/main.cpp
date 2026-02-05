@@ -3,6 +3,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "Sprite.cpp"
 #include "random.cpp"
+#include "tiempo.cpp"
 #include <iostream>
 
 
@@ -43,6 +44,9 @@ void inicializarSDL() {
         std::cerr << "Error al abrir el dispositivo de audio: " << Mix_GetError() << std::endl;
         exit(1);
     }
+
+	//Inicializar tiempo
+	tiempo::inicializarDeltaTime();
 }
 
 //Cierra la ventana y termina SDL
@@ -59,6 +63,8 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 	SDL_Event event;
 
 	while (true) {
+		tiempo::setDeltaTime();
+
 		//Comprobar entradas
 		while (SDL_PollEvent(&event)) {
 			//Cerrar ventana o pulsar escape -> terminar
@@ -71,7 +77,7 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 				float newPosY = getRandomfloat(sprite.spriteRect.h/2, w_height-sprite.spriteRect.h/2);
 				float newMovX = getRandomfloat(-1, 1);
 				float newMovY = getRandomfloat(-1, 1);
-				float newSpeed = getRandomfloat(0.03, 0.3);
+				float newSpeed = getRandomfloat(50, 700);
 				sprite.setPosX(newPosX);
 				sprite.setPosY(newPosY);
 				sprite.setMovX(newMovX);
@@ -138,7 +144,7 @@ int main(int argc, char* argv[]) {
 
 	//Poner sprite en el centro de la ventana
 	Sprite sprite = Sprite(w_width/2, w_height/2, 0.5, IMG_Load("assets/patata.jpg"));
-	sprite.setMovimiento(1.0f, 1.0f, 0.1);
+	sprite.setMovimiento(1.0f, 1.0f, 300);
 
 	//Cargar audio
 	sound = Mix_LoadWAV("assets/sonido.mp3");
