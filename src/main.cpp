@@ -42,7 +42,18 @@ void cerrarSDL() {
 }
 
 void gameLoop(Sprite& sprite, int w_width, int w_height) {
-	for (int i = 0; i <= 10000; i++) {
+	SDL_Event event;
+
+	while (true) {
+		//Comprobar entradas
+		while (SDL_PollEvent(&event)) {
+			//Cerrar ventana o pulsar escape -> terminar
+			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
+				cerrarSDL();
+			}
+		}
+
+		//Actualizar movimiento de sprites
 		sprite.mover();
 		
 		//Rebotar con bordes
@@ -74,10 +85,8 @@ int main(int argc, char* argv[]) {
 	Sprite sprite = Sprite(w_width/2, w_height/2, 0.5, IMG_Load("assets/patata.jpg"));
 	sprite.setMovimiento(1.0f, 1.0f, 0.1);
 	
-	//Mover sprite
+	//Game loop
 	gameLoop(sprite, w_width, w_height);
-
-	//SDL_Delay(3000); //Esperar 3 segundos para cerrar la ventana
 
 	cerrarSDL();
 	return 0;
