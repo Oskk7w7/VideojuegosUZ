@@ -69,6 +69,13 @@ class Sprite {
     void setMovY(float mov) {
         setMovimiento(movX, mov, speed);
     }
+    float getScale() {
+        return scale;
+    }
+    void setScale(float sc) {
+        scale = sc;
+        actualizarRect();
+    }
     //--------------------
 
     //-----------------------------------------------------------------------------

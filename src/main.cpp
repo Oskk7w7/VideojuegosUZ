@@ -78,6 +78,31 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 				sprite.setMovY(newMovY);
 				sprite.speed = newSpeed;
 			}
+			//Escalar sprite con flecha arriba y flecha abajo SDLK_UP
+			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP) {
+				if (sprite.getScale() < 2) {
+					sprite.setScale(sprite.getScale()+0.1);
+
+					//Corregir colisiones
+					while (sprite.spriteRect.x <= 0) {
+						sprite.setPosX(sprite.getPosX()+1);
+					}
+					while (sprite.spriteRect.x+sprite.spriteRect.w >= w_width) {
+						sprite.setPosX(sprite.getPosX()-1);
+					}
+					while(sprite.spriteRect.y <= 0) {
+						sprite.setPosY(sprite.getPosY()+1);
+					}
+					while (sprite.spriteRect.y+sprite.spriteRect.h >= w_height) {
+						sprite.setPosY(sprite.getPosY()-1);
+					}
+				}
+			}
+			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN) {
+				if (sprite.getScale() > 0.3) {
+					sprite.setScale(sprite.getScale()-0.1);
+				}
+			}
 		}
 
 		//Actualizar movimiento de sprites
