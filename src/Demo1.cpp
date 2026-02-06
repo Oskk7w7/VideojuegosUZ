@@ -71,11 +71,11 @@ void gameLoop(Sprite& sprite) {
 			}
 			//Cambiar posición y movimiento con Enter
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
-				float newPosX = getRandomfloat(sprite.spriteRect.w/2, ventana::width-sprite.spriteRect.w/2);
-				float newPosY = getRandomfloat(sprite.spriteRect.h/2, ventana::height-sprite.spriteRect.h/2);
-				float newMovX = getRandomfloat(-1, 1);
-				float newMovY = getRandomfloat(-1, 1);
-				float newSpeed = getRandomfloat(50, 700);
+				float newPosX = getRandomFloat(sprite.spriteRect.w/2, ventana::width-sprite.spriteRect.w/2);
+				float newPosY = getRandomFloat(sprite.spriteRect.h/2, ventana::height-sprite.spriteRect.h/2);
+				float newMovX = getRandomFloat(-1, 1);
+				float newMovY = getRandomFloat(-1, 1);
+				float newSpeed = getRandomFloat(50, 700);
 				sprite.setPosX(newPosX);
 				sprite.setPosY(newPosY);
 				sprite.setMovX(newMovX);

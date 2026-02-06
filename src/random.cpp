@@ -11,7 +11,7 @@ int getRandomInt(int min, int max) {
     return dist(gen);
 }
 
-float getRandomfloat(float min, float max) {
+float getRandomFloat(float min, float max) {
     std::uniform_real_distribution<float> dist(min, max);
     return dist(gen);
 }

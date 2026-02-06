@@ -17,6 +17,17 @@ class Sprite {
         SDL_Rect spriteRect;
         SDL_Surface* sprite;
 
+        Sprite() {
+            posX = 0;
+            posY = 0;
+            movX = 0;
+            movY = 0;
+            speed = 0.0f;
+            scale = 1;
+            sprite = NULL;
+            spriteRect = {0,0,1,1};
+        }
+
         Sprite(int _posX, int _posY, float _scale, SDL_Surface* _sprite) {
         posX = _posX;
         posY = _posY;
