@@ -6,35 +6,21 @@
 #include "tiempo.cpp"
 #include <iostream>
 #include <windows.h>
+#include "ventana.cpp"
 
 
-SDL_Window* win;
-SDL_Surface* winSurface;
 Mix_Chunk* sound;
 
+
 //Inicializa SDL, crea la ventana y la superficie
-void inicializarSDL() {
+void inicializarSistema() {
 	//Inicializar SDL
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 		std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
 		exit(1);
 	}
 
-	//Crear ventana
-	win = SDL_CreateWindow("Demo 1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_RESIZABLE);
-	if (win == nullptr) {
-		std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-		SDL_Quit();
-		exit(1);
-	}
-
-	//Crear superficie
-	winSurface = SDL_GetWindowSurface(win);
-	if (winSurface == nullptr) {
-		std::cerr << "SDL_GetWindowSurface Error: " << SDL_GetError() << std::endl;
-		SDL_Quit();
-		exit(1);
-	}
+	ventana::inicializar();
 
 	//Inicializar audio
 	if (Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) == 0) {
@@ -59,13 +45,11 @@ void inicializarSDL() {
 void cerrarSDL() {
 	Mix_FreeChunk(sound);			//Liberar audio
 	Mix_CloseAudio();
-	SDL_FreeSurface(winSurface);	//Liberar superficie
-	winSurface = NULL;
-	SDL_DestroyWindow(win);		//Cerrar ventana
+	ventana::cerrar();
 	SDL_Quit();					//Cerrar SDL
 }
 
-void gameLoop(Sprite& sprite, int w_width, int w_height) {
+void gameLoop(Sprite& sprite) {
 	SDL_Event event;
 
 	while (true) {
@@ -79,17 +63,16 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 			}
 			//Redimensionado de la ventana
 			if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
-				float xProportion = sprite.getPosX() / (float) w_width;
-				float yProportion = sprite.getPosY() / (float) w_height;
+				float xProportion = sprite.getPosX() / (float) ventana::width;
+				float yProportion = sprite.getPosY() / (float) ventana::height;
 
-				winSurface = SDL_GetWindowSurface(win);
-				SDL_GetWindowSize(win, &w_width, &w_height);
-				sprite.setPos(w_width * xProportion, w_height * yProportion);
+				ventana::actualizarDimensiones();
+				sprite.setPos(ventana::width * xProportion, ventana::height * yProportion);
 			}
 			//Cambiar posición y movimiento con Enter
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
-				float newPosX = getRandomfloat(sprite.spriteRect.w/2, w_width-sprite.spriteRect.w/2);
-				float newPosY = getRandomfloat(sprite.spriteRect.h/2, w_height-sprite.spriteRect.h/2);
+				float newPosX = getRandomfloat(sprite.spriteRect.w/2, ventana::width-sprite.spriteRect.w/2);
+				float newPosY = getRandomfloat(sprite.spriteRect.h/2, ventana::height-sprite.spriteRect.h/2);
 				float newMovX = getRandomfloat(-1, 1);
 				float newMovY = getRandomfloat(-1, 1);
 				float newSpeed = getRandomfloat(50, 700);
@@ -108,13 +91,13 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 					while (sprite.spriteRect.x <= 0) {
 						sprite.setPosX(sprite.getPosX()+1);
 					}
-					while (sprite.spriteRect.x+sprite.spriteRect.w >= w_width) {
+					while (sprite.spriteRect.x+sprite.spriteRect.w >= ventana::width) {
 						sprite.setPosX(sprite.getPosX()-1);
 					}
 					while(sprite.spriteRect.y <= 0) {
 						sprite.setPosY(sprite.getPosY()+1);
 					}
-					while (sprite.spriteRect.y+sprite.spriteRect.h >= w_height) {
+					while (sprite.spriteRect.y+sprite.spriteRect.h >= ventana::height) {
 						sprite.setPosY(sprite.getPosY()-1);
 					}
 				}
@@ -130,35 +113,30 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 		sprite.mover();
 		
 		//Rebotar con bordes
-		if (sprite.spriteRect.x <= 0 || sprite.spriteRect.x+sprite.spriteRect.w >= w_width) {
+		if (sprite.spriteRect.x <= 0 || sprite.spriteRect.x+sprite.spriteRect.w >= ventana::width) {
 			Mix_PlayChannel(-1,sound, 0);
             sprite.setMovX(sprite.getMovX()*-1);
 			
         }
-        else if (sprite.spriteRect.y <= 0 || sprite.spriteRect.y+sprite.spriteRect.h >= w_height) {
+        else if (sprite.spriteRect.y <= 0 || sprite.spriteRect.y+sprite.spriteRect.h >= ventana::height) {
 			Mix_PlayChannel(-1,sound, 0);
             sprite.setMovY(sprite.getMovY()*-1);
 			
         }
 
 		//Repintar sprite y actualizar superficie de la ventana
-		SDL_FillRect(winSurface, NULL, SDL_MapRGB(winSurface->format, 0, 0, 0));
-		SDL_BlitScaled(sprite.sprite, NULL, winSurface, &sprite.spriteRect);
-		SDL_UpdateWindowSurface(win);
+		SDL_FillRect(ventana::winSurface, NULL, SDL_MapRGB(ventana::winSurface->format, 0, 0, 0));
+		SDL_BlitScaled(sprite.sprite, NULL, ventana::winSurface, &sprite.spriteRect);
+		SDL_UpdateWindowSurface(ventana::win);
 	}
 }
 
 int main(int argc, char* argv[]) {
 	//Inicializar
-	inicializarSDL();
-	
-	//Dimensiones de la ventana
-	int w_width = 0;
-	int w_height = 0;
-	SDL_GetWindowSize(win, &w_width, &w_height);
+	inicializarSistema();
 
 	//Poner sprite en el centro de la ventana
-	Sprite sprite = Sprite(w_width/2, w_height/2, 0.5, IMG_Load("assets/patata.jpg"));
+	Sprite sprite = Sprite(ventana::width/2, ventana::height/2, 0.5, IMG_Load("assets/patata.jpg"));
 	sprite.setMovimiento(1.0f, 1.0f, 300);
 
 	//Cargar audio
@@ -169,7 +147,7 @@ int main(int argc, char* argv[]) {
     }
 	
 	//Game loop
-	gameLoop(sprite, w_width, w_height);
+	gameLoop(sprite);
 
 	cerrarSDL();
 	return 0;

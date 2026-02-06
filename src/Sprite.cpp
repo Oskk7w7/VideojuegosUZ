@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include "tiempo.cpp"
+#include "ventana.cpp"
 
 class Sprite {
     private:
@@ -87,10 +88,10 @@ class Sprite {
     //-----------------------------------------------------------------------------
     private:
         void actualizarRect() {
-            int rectX = static_cast<int>(posX-sprite->w/2 * scale);
-            int rectY = static_cast<int>(posY-sprite->h/2* scale);
-            int rectW = static_cast<int>(sprite->w* scale);
-            int rectH = static_cast<int>(sprite->h* scale);
+            int rectX = static_cast<int>(posX-sprite->w/2 * scale * ventana::width / ventana::initWidth);
+            int rectY = static_cast<int>(posY-sprite->h/2* scale * ventana::height / ventana::initHeight);
+            int rectW = static_cast<int>(sprite->w* scale * ventana::width / 640);
+            int rectH = static_cast<int>(sprite->h* scale * ventana::height / 480);
             spriteRect = { rectX, rectY, rectW, rectH };
         }
 };
