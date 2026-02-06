@@ -5,11 +5,12 @@
 #include "random.cpp"
 #include "tiempo.cpp"
 #include <iostream>
+#include <windows.h>
 
 
-static SDL_Window* win;
-static SDL_Surface* winSurface;
-static Mix_Chunk* sound;
+SDL_Window* win;
+SDL_Surface* winSurface;
+Mix_Chunk* sound;
 
 //Inicializa SDL, crea la ventana y la superficie
 void inicializarSDL() {
@@ -47,6 +48,11 @@ void inicializarSDL() {
 
 	//Inicializar tiempo
 	tiempo::inicializarDeltaTime();
+
+	//Forzar abrir consola
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
 }
 
 //Cierra la ventana y termina SDL
@@ -66,33 +72,22 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 		tiempo::setDeltaTime();
 
 		//Comprobar entradas
-		while (SDL_PollEvent(&event)) {
+		if (SDL_PollEvent(&event)) {
 			//Cerrar ventana o pulsar escape -> terminar
 			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)) {
 				cerrarSDL();
 			}
 			//Redimensionado de la ventana
-			else if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
-				// winSurface = SDL_GetWindowSurface(win);
-				// int new_w_width;
-				// int new_w_height;
-				// SDL_GetWindowSize(win, &new_w_width, &new_w_height);
-				// float widthProportion = (float)new_w_width / (float)w_width;
-				// float heightProportion = (float)new_w_height / (float)w_height;
-				// w_width = new_w_width;
-				// w_height = new_w_height;
-				// sprite.setPos(sprite.getPosX() * widthProportion, sprite.getPosY() * heightProportion);
-
-				
-
+			if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED) {
 				float xProportion = sprite.getPosX() / (float) w_width;
 				float yProportion = sprite.getPosY() / (float) w_height;
+
 				winSurface = SDL_GetWindowSurface(win);
 				SDL_GetWindowSize(win, &w_width, &w_height);
 				sprite.setPos(w_width * xProportion, w_height * yProportion);
 			}
 			//Cambiar posición y movimiento con Enter
-			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) {
 				float newPosX = getRandomfloat(sprite.spriteRect.w/2, w_width-sprite.spriteRect.w/2);
 				float newPosY = getRandomfloat(sprite.spriteRect.h/2, w_height-sprite.spriteRect.h/2);
 				float newMovX = getRandomfloat(-1, 1);
@@ -105,7 +100,7 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 				sprite.speed = newSpeed;
 			}
 			//Escalar sprite con flecha arriba y flecha abajo SDLK_UP
-			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP) {
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP) {
 				if (sprite.getScale() < 2) {
 					sprite.setScale(sprite.getScale()+0.1);
 
@@ -124,7 +119,7 @@ void gameLoop(Sprite& sprite, int w_width, int w_height) {
 					}
 				}
 			}
-			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN) {
+			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN) {
 				if (sprite.getScale() > 0.3) {
 					sprite.setScale(sprite.getScale()-0.1);
 				}
