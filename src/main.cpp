@@ -43,10 +43,10 @@ void inicializarSistema() {
 
 //Cierra la ventana y termina SDL
 void cerrarSDL() {
-	Mix_FreeChunk(sound);			//Liberar audio
+	Mix_FreeChunk(sound);	//Liberar audio
 	Mix_CloseAudio();
-	ventana::cerrar();
-	SDL_Quit();					//Cerrar SDL
+	ventana::cerrar();		//Cerrar ventana
+	SDL_Quit();				//Cerrar SDL
 }
 
 void gameLoop(Sprite& sprite) {
@@ -113,16 +113,22 @@ void gameLoop(Sprite& sprite) {
 		sprite.mover();
 		
 		//Rebotar con bordes
-		if (sprite.spriteRect.x <= 0 || sprite.spriteRect.x+sprite.spriteRect.w >= ventana::width) {
+		if (sprite.spriteRect.x <= 0) {				//Borde izquierdo
 			Mix_PlayChannel(-1,sound, 0);
-            sprite.setMovX(sprite.getMovX()*-1);
-			
+            sprite.setMovX(abs(sprite.getMovX()));
         }
-        else if (sprite.spriteRect.y <= 0 || sprite.spriteRect.y+sprite.spriteRect.h >= ventana::height) {
+        else if (sprite.spriteRect.y <= 0) {		//Borde arriba
 			Mix_PlayChannel(-1,sound, 0);
-            sprite.setMovY(sprite.getMovY()*-1);
-			
+            sprite.setMovY(abs(sprite.getMovY()));
         }
+		else if (sprite.spriteRect.x+sprite.spriteRect.w >= ventana::width) {	//Borde derecho
+			Mix_PlayChannel(-1,sound, 0);
+            sprite.setMovX(-abs(sprite.getMovX()));
+		}
+		else if (sprite.spriteRect.y+sprite.spriteRect.h >= ventana::height) {	//Borde abajo
+			Mix_PlayChannel(-1,sound, 0);
+			sprite.setMovY(-abs(sprite.getMovY()));
+		}
 
 		//Repintar sprite y actualizar superficie de la ventana
 		SDL_FillRect(ventana::winSurface, NULL, SDL_MapRGB(ventana::winSurface->format, 0, 0, 0));
