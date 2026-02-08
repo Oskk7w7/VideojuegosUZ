@@ -7,6 +7,7 @@
 #include <iostream>
 #include <windows.h>
 #include "ventana.cpp"
+#include <cmath>
 
 
 Mix_Chunk* sound;
@@ -115,19 +116,19 @@ void gameLoop(Sprite& sprite) {
 		//Rebotar con bordes
 		if (sprite.spriteRect.x <= 0) {				//Borde izquierdo
 			Mix_PlayChannel(-1,sound, 0);
-            sprite.setMovX(abs(sprite.getMovX()));
+            sprite.setMovX(fabs(sprite.getMovX()));
         }
         else if (sprite.spriteRect.y <= 0) {		//Borde arriba
 			Mix_PlayChannel(-1,sound, 0);
-            sprite.setMovY(abs(sprite.getMovY()));
+            sprite.setMovY(fabs(sprite.getMovY()));
         }
 		else if (sprite.spriteRect.x+sprite.spriteRect.w >= ventana::width) {	//Borde derecho
 			Mix_PlayChannel(-1,sound, 0);
-            sprite.setMovX(-abs(sprite.getMovX()));
+            sprite.setMovX(-fabs(sprite.getMovX()));
 		}
 		else if (sprite.spriteRect.y+sprite.spriteRect.h >= ventana::height) {	//Borde abajo
 			Mix_PlayChannel(-1,sound, 0);
-			sprite.setMovY(-abs(sprite.getMovY()));
+			sprite.setMovY(-fabs(sprite.getMovY()));
 		}
 
 		//Repintar sprite y actualizar superficie de la ventana

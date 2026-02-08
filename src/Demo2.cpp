@@ -7,6 +7,7 @@
 #include <iostream>
 #include <windows.h>
 #include "ventana.cpp"
+#include <cmath>
 
 
 Mix_Chunk* sound;
@@ -142,19 +143,19 @@ void gameLoop(Sprite objetos[], int nObjetos) {
 		for (int i = 0; i < nObjetos; i++) {
 			if (objetos[i].spriteRect.x <= 0) {				//Borde izquierdo
 				Mix_PlayChannel(-1,sound, 0);
-				objetos[i].setMovX(abs(objetos[i].getMovX()));
+				objetos[i].setMovX(fabs(objetos[i].getMovX()));
 			}
 			else if (objetos[i].spriteRect.y <= 0) {		//Borde arriba
 				Mix_PlayChannel(-1,sound, 0);
-				objetos[i].setMovY(abs(objetos[i].getMovY()));
+				objetos[i].setMovY(fabs(objetos[i].getMovY()));
 			}
 			else if (objetos[i].spriteRect.x+objetos[i].spriteRect.w >= ventana::width) {	//Borde derecho
 				Mix_PlayChannel(-1,sound, 0);
-				objetos[i].setMovX(-abs(objetos[i].getMovX()));
+				objetos[i].setMovX(-fabs(objetos[i].getMovX()));
 			}
 			else if (objetos[i].spriteRect.y+objetos[i].spriteRect.h >= ventana::height) {	//Borde abajo
 				Mix_PlayChannel(-1,sound, 0);
-				objetos[i].setMovY(-abs(objetos[i].getMovY()));
+				objetos[i].setMovY(-fabs(objetos[i].getMovY()));
 			}
 		}
 
