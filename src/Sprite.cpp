@@ -12,6 +12,7 @@ class Sprite {
         float scale;
         float movX;
         float movY;
+        int zIndex;  // Plano de profundidad (mayor = más adelante)
     public:
         float speed;
         SDL_Rect spriteRect;
@@ -24,6 +25,7 @@ class Sprite {
             movY = 0;
             speed = 0.0f;
             scale = 1;
+            zIndex = 0;
             sprite = NULL;
             spriteRect = {0,0,1,1};
         }
@@ -35,6 +37,7 @@ class Sprite {
         movY = 0;
         speed = 0.0f;
         scale = _scale;
+        zIndex = 0;
         sprite = _sprite;
 
         actualizarRect();
@@ -94,6 +97,12 @@ class Sprite {
         scale = sc;
         actualizarRect();
     }
+    int getZIndex() {
+        return zIndex;
+    }
+    void setZIndex(int z) {
+        zIndex = z;
+    }
     //--------------------
 
     //-----------------------------------------------------------------------------
@@ -101,8 +110,8 @@ class Sprite {
         void actualizarRect() {
             int rectX = static_cast<int>(posX-sprite->w/2 * scale * ventana::width / ventana::initWidth);
             int rectY = static_cast<int>(posY-sprite->h/2* scale * ventana::height / ventana::initHeight);
-            int rectW = static_cast<int>(sprite->w* scale * ventana::width / 640);
-            int rectH = static_cast<int>(sprite->h* scale * ventana::height / 480);
+            int rectW = static_cast<int>(sprite->w* scale * ventana::width / ventana::initWidth);
+            int rectH = static_cast<int>(sprite->h* scale * ventana::height / ventana::initHeight);
             spriteRect = { rectX, rectY, rectW, rectH };
         }
 };
